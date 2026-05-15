@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>峡谷会战沙盘演示</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark"></span>
+          <span>峡谷会战沙盘</span>
+        </div>
+
+        <div class="toolbar-group segmented" aria-label="编辑模式">
+          <button id="selectModeBtn" type="button" data-mode="select">选择</button>
+          <button id="addBuildingModeBtn" type="button" data-mode="add-building">新增建筑</button>
+        </div>
+
+        <label class="duration-control">
+          <span>单段行进</span>
+          <input id="durationInput" type="number" min="1" max="600" step="0.5" />
+          <span>秒</span>
+        </label>
+
+        <div class="toolbar-group">
+          <button id="startBtn" type="button" class="primary">启动演示</button>
+          <button id="pauseBtn" type="button">暂停</button>
+          <button id="resetBtn" type="button">复位</button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="map-pane" aria-label="峡谷会战地图">
+          <div id="mapStage" class="map-stage">
+            <img
+              id="mapImage"
+              src="./峡谷会战地图.png"
+              alt="峡谷会战地图"
+              draggable="false"
+            />
+            <svg id="routeLayer" class="route-layer" viewBox="0 0 1470 1080" aria-hidden="true"></svg>
+            <div id="queueLayer" class="queue-layer" aria-label="行进队列"></div>
+            <div id="buildingLayer" class="building-layer" aria-label="建筑点"></div>
+          </div>
+          <div class="status-strip">
+            <span id="selectionStatus">未选择</span>
+            <span id="progressStatus">待命</span>
+            <span id="countStatus">0 建筑 / 0 队列</span>
+          </div>
+        </section>
+
+        <aside class="control-panel">
+          <section class="panel-section project-section">
+            <div class="section-title">
+              <h2>沙盘配置</h2>
+              <div class="section-actions">
+                <button id="loadSampleBtn" type="button">载入示例</button>
+                <button id="clearProjectBtn" type="button">清空沙盘</button>
+              </div>
+            </div>
+
+            <div class="building-management-hidden" aria-hidden="true">
+            <div id="buildingEditor" class="editor-block">
+              <label>
+                <span>名称</span>
+                <input id="buildingNameInput" type="text" maxlength="20" />
+              </label>
+              <div class="button-row">
+                <button id="addQueueAtBuildingBtn" type="button">在此设置队列</button>
+                <button id="deleteBuildingBtn" type="button" class="danger">删除建筑</button>
+              </div>
+            </div>
+
+            <div id="buildingList" class="item-list"></div>
+            </div>
+          </section>
+
+          <section class="panel-section queue-section">
+            <div class="section-title">
+              <h2>行进队列</h2>
+              <button id="createQueueBtn" type="button">新增队列</button>
+            </div>
+
+            <div id="queueList" class="item-list"></div>
+
+            <div id="queueEditor" class="editor-block">
+              <label>
+                <span>名称</span>
+                <input id="queueNameInput" type="text" maxlength="24" />
+              </label>
+
+              <div class="field-grid">
+                <label>
+                  <span>颜色</span>
+                  <input id="queueColorInput" type="color" />
+                </label>
+                <label>
+                  <span>字号</span>
+                  <input id="queueFontSizeInput" type="number" min="10" max="32" step="1" />
+                </label>
+                <label>
+                  <span>标记</span>
+                  <input id="queueMarkerSizeInput" type="number" min="10" max="36" step="1" />
+                </label>
+              </div>
+
+              <div class="route-builder">
+                <label>
+                  <span>起点节点</span>
+                  <select id="routeSourceSelect"></select>
+                </label>
+                <label>
+                  <span>步骤建筑</span>
+                  <select id="routeBuildingSelect"></select>
+                </label>
+                <button id="appendRouteStepBtn" type="button">追加步骤</button>
+              </div>
+
+              <div id="routeStepsList" class="route-steps"></div>
+
+              <div class="button-row">
+                <button id="clearRouteBtn" type="button">清空路线</button>
+                <button id="deleteQueueBtn" type="button" class="danger">删除队列</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel-section">
+            <div class="section-title">
+              <h2>行进加速</h2>
+            </div>
+            <div class="accelerate-grid">
+              <button id="accel20Btn" type="button">剩余 -20%</button>
+              <button id="accel50Btn" type="button">剩余 -50%</button>
+            </div>
+            <div id="accelStats" class="stat-box"></div>
+            <div id="segmentLog" class="segment-log"></div>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
