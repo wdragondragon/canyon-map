@@ -64,6 +64,38 @@ describe("queue animation", () => {
     expect(queue.runtime.runs[0]).toMatchObject({ edgeId: "e2", phase: "moving" });
   });
 
+  it("keeps other queues moving while one queue is waiting", () => {
+    const waitingQueue = normalizeQueue({
+      route: {
+        root: "s1",
+        edges: [
+          { id: "e1", fromId: "s1", toId: "s2", pauseSeconds: 3 },
+          { id: "e2", fromId: "s2", toId: "s10" },
+        ],
+      },
+    });
+    const movingQueue = normalizeQueue({
+      route: {
+        root: "f1",
+        edges: [
+          { id: "e3", fromId: "f1", toId: "f3" },
+          { id: "e4", fromId: "f3", toId: "f6" },
+        ],
+      },
+    });
+    waitingQueue.runtime = createRuntime("running");
+    movingQueue.runtime = createRuntime("running");
+    waitingQueue.runtime.runs = createEligibleRuns(waitingQueue, 1);
+    movingQueue.runtime.runs = createEligibleRuns(movingQueue, 1);
+
+    advanceQueue(waitingQueue, 1.1, 1, DEFAULT_BUILDINGS);
+    advanceQueue(movingQueue, 1.1, 1, DEFAULT_BUILDINGS);
+
+    expect(waitingQueue.runtime.runs[0]).toMatchObject({ edgeId: "e1", phase: "waiting" });
+    expect(movingQueue.runtime.runs[0]).toMatchObject({ edgeId: "e4", phase: "moving" });
+    expect(movingQueue.runtime.runs[0].elapsed).toBeCloseTo(0.1);
+  });
+
   it("runs only the selected step in step mode", () => {
     const queue = normalizeQueue({
       route: {
