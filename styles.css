@@ -201,6 +201,10 @@ label {
   min-width: 184px;
 }
 
+.step-control {
+  min-width: 172px;
+}
+
 .workspace {
   display: grid;
   grid-template-columns: minmax(560px, 1fr) 390px;
@@ -382,6 +386,10 @@ label {
 
 .building-point.is-selected {
   z-index: 5;
+}
+
+.map-stage.is-demo-running .building-point {
+  display: none;
 }
 
 .building-label {
@@ -574,6 +582,18 @@ label {
   padding-inline: 10px;
 }
 
+.scene-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: end;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.scene-row button {
+  padding-inline: 10px;
+}
+
 .editor-block {
   display: grid;
   gap: 10px;
@@ -613,7 +633,7 @@ label {
 
 .route-builder {
   display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr) 76px 76px auto;
   align-items: end;
   gap: 8px;
 }
@@ -700,7 +720,7 @@ label {
 
 .route-step {
   display: grid;
-  grid-template-columns: 32px 1fr auto auto auto;
+  grid-template-columns: 32px minmax(0, 1fr) 68px 76px auto auto auto;
   align-items: center;
   gap: 6px;
   min-height: 34px;
@@ -734,6 +754,17 @@ label {
   min-width: 40px;
   min-height: 28px;
   padding-inline: 7px;
+  font-size: 12px;
+}
+
+.route-step label {
+  gap: 2px;
+  font-size: 10px;
+}
+
+.route-step input {
+  min-height: 28px;
+  padding: 3px 6px;
   font-size: 12px;
 }
 
@@ -855,6 +886,7 @@ label {
   .status-strip,
   .field-grid,
   .button-row,
+  .scene-row,
   .route-builder {
     grid-template-columns: 1fr;
   }

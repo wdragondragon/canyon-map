@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
     <title>峡谷会战沙盘演示</title>
-    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <div class="app-shell">
@@ -25,8 +25,16 @@
           <span>秒</span>
         </label>
 
+        <label class="duration-control step-control">
+          <span>演示步骤</span>
+          <input id="demoStepInput" type="number" min="1" max="999" step="1" />
+          <span>步</span>
+        </label>
+
         <div class="toolbar-group">
           <button id="startBtn" type="button" class="primary">启动演示</button>
+          <button id="startStepBtn" type="button">启动步骤</button>
+          <button id="nextStepBtn" type="button">下一步</button>
           <button id="pauseBtn" type="button">暂停</button>
           <button id="resetBtn" type="button">复位</button>
         </div>
@@ -60,6 +68,15 @@
                 <button id="loadSampleBtn" type="button">载入示例</button>
                 <button id="clearProjectBtn" type="button">清空沙盘</button>
               </div>
+            </div>
+
+            <div class="scene-row">
+              <label>
+                <span>场景</span>
+                <select id="sceneSelect"></select>
+              </label>
+              <button id="createSceneBtn" type="button">新增场景</button>
+              <button id="deleteSceneBtn" type="button" class="danger">删除场景</button>
             </div>
 
             <div class="building-management-hidden" aria-hidden="true">
@@ -116,6 +133,14 @@
                   <span>步骤建筑</span>
                   <select id="routeBuildingSelect"></select>
                 </label>
+                <label>
+                  <span>所属步骤</span>
+                  <input id="routeStepInput" type="number" min="1" max="999" step="1" />
+                </label>
+                <label>
+                  <span>停顿秒</span>
+                  <input id="routePauseInput" type="number" min="0" max="600" step="0.5" />
+                </label>
                 <button id="appendRouteStepBtn" type="button">追加步骤</button>
               </div>
 
@@ -143,6 +168,6 @@
       </main>
     </div>
 
-    <script src="./app.js"></script>
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
