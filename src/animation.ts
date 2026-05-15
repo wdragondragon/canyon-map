@@ -167,11 +167,16 @@ export function getQueuePositions(queueItem: QueueConfig, buildings: BuildingPoi
       .filter((point): point is Point => Boolean(point));
   }
 
-  const completedEdges = queueItem.route.edges.filter((edge) => runtime.completedEdgeIds.has(edge.id));
-  const completedFromIds = new Set(completedEdges.map((edge) => edge.fromId));
+  const completedEdges = queueItem.route.edges
+    .map((edge, index) => ({ edge, index }))
+    .filter((item) => runtime.completedEdgeIds.has(item.edge.id));
   const completedTailIds = completedEdges
-    .map((edge) => edge.toId)
-    .filter((id, index, ids) => !completedFromIds.has(id) && ids.indexOf(id) === index);
+    .filter(
+      ({ edge, index }) =>
+        !completedEdges.some((candidate) => candidate.index > index && candidate.edge.fromId === edge.toId),
+    )
+    .map(({ edge }) => edge.toId)
+    .filter((id, index, ids) => ids.indexOf(id) === index);
   const tails = getRouteTailIds(queueItem);
   const targetIds =
     runtime.status === "finished" && completedTailIds.length

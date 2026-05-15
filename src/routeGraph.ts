@@ -88,7 +88,6 @@ export function normalizeRoute(route: unknown): RouteGraph {
   if (!isRecord(route)) return { root: null, edges: [] };
 
   const root = route.root ? String(route.root) : null;
-  const seen = new Set<string>();
   const edges = Array.isArray(route.edges)
     ? route.edges
         .map((edge): RouteEdge | null => {
@@ -105,17 +104,14 @@ export function normalizeRoute(route: unknown): RouteGraph {
         })
         .filter((edge): edge is RouteEdge => {
           if (!edge) return false;
-          const key = `${edge.fromId}->${edge.toId}`;
           if (
             !edge.fromId ||
             !edge.toId ||
             edge.fromId === edge.toId ||
-            seen.has(key) ||
             !isLinkedBuildings(edge.fromId, edge.toId)
           ) {
             return false;
           }
-          seen.add(key);
           return true;
         })
     : [];
@@ -220,7 +216,6 @@ export function canAppendRouteTarget(
   if (!queueItem.route.root) return true;
   if (!sourceId || sourceId === buildingId) return false;
   if (!getRouteNodeIds(queueItem).has(sourceId)) return false;
-  if (getOutgoingEdges(queueItem, sourceId).some((edge) => edge.toId === buildingId)) return false;
   return isLinkedBuildings(sourceId, buildingId);
 }
 

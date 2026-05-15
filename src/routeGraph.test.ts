@@ -36,15 +36,35 @@ describe("route graph", () => {
     expect(canAppendRouteTarget(queue, "s4", "s1", { playing: false })).toBe(true);
   });
 
-  it("rejects duplicate route edges", () => {
+  it("allows repeated traversal of the same adjacent edge", () => {
     const queue = normalizeQueue({
       route: {
         root: "s1",
-        edges: [{ id: "e1", fromId: "s1", toId: "s2" }],
+        edges: [
+          { id: "e1", fromId: "s1", toId: "s2" },
+          { id: "e2", fromId: "s2", toId: "s1" },
+        ],
       },
     });
 
-    expect(canAppendRouteTarget(queue, "s2", "s1", { playing: false })).toBe(false);
+    expect(canAppendRouteTarget(queue, "s2", "s1", { playing: false })).toBe(true);
+  });
+
+  it("preserves repeated route edges during normalization", () => {
+    const route = normalizeRoute({
+      root: "s1",
+      edges: [
+        { id: "e1", fromId: "s1", toId: "s2" },
+        { id: "e2", fromId: "s2", toId: "s1" },
+        { id: "e3", fromId: "s1", toId: "s2" },
+      ],
+    });
+
+    expect(route.edges.map((edge) => [edge.fromId, edge.toId])).toEqual([
+      ["s1", "s2"],
+      ["s2", "s1"],
+      ["s1", "s2"],
+    ]);
   });
 
   it("prunes unreachable route edges", () => {

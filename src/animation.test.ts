@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { createRuntime } from "./state";
 import { DEFAULT_BUILDINGS } from "./data/defaultMap";
-import { accelerateQueue, advanceQueue, createEligibleRuns, totalAcceleration } from "./animation";
-import { normalizeQueue } from "./routeGraph";
+import { accelerateQueue, advanceQueue, createEligibleRuns, getQueuePositions, totalAcceleration } from "./animation";
+import { getBuildingPoint, normalizeQueue } from "./routeGraph";
 
 describe("queue animation", () => {
   it("advances a queue from root to final tail", () => {
@@ -119,6 +119,38 @@ describe("queue animation", () => {
     queue.runtime.completedEdgeIds.add("e1");
     queue.runtime.runs = createEligibleRuns(queue, 1, 2);
     expect(queue.runtime.runs.map((run) => run.edgeId)).toEqual(["e2"]);
+  });
+
+  it("runs a back-and-forth route between two buildings in sequence", () => {
+    const queue = normalizeQueue({
+      route: {
+        root: "s1",
+        edges: [
+          { id: "e1", fromId: "s1", toId: "s2" },
+          { id: "e2", fromId: "s2", toId: "s1" },
+          { id: "e3", fromId: "s1", toId: "s2" },
+        ],
+      },
+    });
+    queue.runtime = createRuntime("running");
+    queue.runtime.runs = createEligibleRuns(queue, 1);
+
+    expect(queue.runtime.runs.map((run) => run.edgeId)).toEqual(["e1"]);
+
+    advanceQueue(queue, 1.1, 1, DEFAULT_BUILDINGS);
+    expect(queue.runtime.runs.map((run) => run.edgeId)).toEqual(["e2"]);
+
+    advanceQueue(queue, 1.1, 1, DEFAULT_BUILDINGS);
+    expect(queue.runtime.runs.map((run) => run.edgeId)).toEqual(["e3"]);
+
+    advanceQueue(queue, 1.1, 1, DEFAULT_BUILDINGS);
+    expect(queue.runtime.status).toBe("finished");
+    expect(queue.runtime.history.map((row) => [row.fromId, row.toId])).toEqual([
+      ["s1", "s2"],
+      ["s2", "s1"],
+      ["s1", "s2"],
+    ]);
+    expect(getQueuePositions(queue, DEFAULT_BUILDINGS)[0]).toEqual(getBuildingPoint(DEFAULT_BUILDINGS.find((item) => item.id === "s2")!));
   });
 
   it("shortens remaining time and counts 20% and 50% acceleration", () => {

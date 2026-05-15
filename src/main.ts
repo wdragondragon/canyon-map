@@ -539,7 +539,7 @@ function appendRouteStep(): void {
 
   const sourceId = el.routeSourceSelect.value || getActiveRouteSourceId(queueItem, state);
   if (!canAppendRouteTarget(queueItem, buildingId, sourceId, state)) {
-    state.routeMessage = "只能从路线节点连接到相邻建筑，且不能重复连接";
+    state.routeMessage = "只能从路线节点连接到相邻建筑";
     renderStatus(context);
     return;
   }
